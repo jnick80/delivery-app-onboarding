@@ -4,16 +4,15 @@
 
 export interface DriverOnboardingData {
   id?: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
-  phoneNumber: string;
+  phone: string;
   licenseNumber: string;
   licenseExpiry: string;
   vehicleType: 'motorcycle' | 'car' | 'van' | 'truck';
   vehiclePlate: string;
   insuranceExpiry: string;
-  bankAccount?: string;
+  bankAccount: string;
   createdAt?: Date;
   updatedAt?: Date;
   status: 'pending' | 'approved' | 'rejected';
@@ -26,13 +25,10 @@ export interface MerchantOnboardingData {
   businessPhone: string;
   ownerName: string;
   taxId: string;
-  address: string;
-  city: string;
-  state: string;
-  zipCode: string;
-  businessCategory: string;
-  estimatedDeliveryRadius: number;
-  bankAccount?: string;
+  registrationNumber: string;
+  serviceArea: string;
+  deliveryRadius: string;
+  bankAccount: string;
   createdAt?: Date;
   updatedAt?: Date;
   status: 'pending' | 'approved' | 'rejected';

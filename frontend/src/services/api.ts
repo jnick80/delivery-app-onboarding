@@ -1,5 +1,24 @@
 import axios, { AxiosInstance } from 'axios';
 
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+interface AIAssistanceData {
+  suggestion: string;
+  confidence: number;
+  alternatives?: string[];
+}
+
+interface OnboardingStatusData {
+  id: string;
+  status: string;
+  submittedAt: string;
+}
+
 const apiClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
   headers: {
@@ -36,11 +55,52 @@ export const getHealthStatus = async () => {
 /**
  * Get AI assistance for a field
  */
-export const getAIAssistance = async (fieldName: string, context: string) => {
-  return apiClient.post('/api/ai/assist', {
+export const getAIAssistance = async (
+  fieldName: string,
+  context: string,
+  userInput?: string
+) => {
+  const response = await apiClient.post<ApiResponse<AIAssistanceData>>('/api/ai/assist', {
     field: fieldName,
     context,
+    userInput,
   });
+
+  return response.data;
+};
+
+export const submitDriverOnboarding = async (payload: Record<string, string>) => {
+  const response = await apiClient.post<ApiResponse<OnboardingStatusData>>(
+    '/api/onboarding/driver',
+    payload
+  );
+
+  return response.data;
+};
+
+export const getDriverOnboardingStatus = async (id: string) => {
+  const response = await apiClient.get<ApiResponse<OnboardingStatusData>>(
+    `/api/onboarding/driver/${id}`
+  );
+
+  return response.data;
+};
+
+export const submitMerchantOnboarding = async (payload: Record<string, string>) => {
+  const response = await apiClient.post<ApiResponse<OnboardingStatusData>>(
+    '/api/onboarding/merchant',
+    payload
+  );
+
+  return response.data;
+};
+
+export const getMerchantOnboardingStatus = async (id: string) => {
+  const response = await apiClient.get<ApiResponse<OnboardingStatusData>>(
+    `/api/onboarding/merchant/${id}`
+  );
+
+  return response.data;
 };
 
 export default apiClient;
