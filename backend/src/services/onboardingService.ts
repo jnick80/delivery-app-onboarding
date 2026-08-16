@@ -32,6 +32,7 @@ interface OnboardingRecord<T> {
   data: T;
 }
 
+// Prototype-only in-memory stores. These records reset when the backend process restarts.
 const driverApplications = new Map<string, OnboardingRecord<DriverSubmission>>();
 const merchantApplications = new Map<string, OnboardingRecord<MerchantSubmission>>();
 

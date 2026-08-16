@@ -6,6 +6,9 @@ export interface AIAssistPayload {
   userInput?: string;
 }
 
+const GEMINI_CONFIDENCE = 0.88;
+const FALLBACK_CONFIDENCE = 0.48;
+
 function formatFieldName(field: string) {
   return field
     .replace(/([A-Z])/g, ' $1')
@@ -37,7 +40,7 @@ export async function getFieldAssistance(payload: AIAssistPayload) {
 
   return {
     suggestion,
-    confidence: geminiConfigured ? 0.88 : 0.48,
+    confidence: geminiConfigured ? GEMINI_CONFIDENCE : FALLBACK_CONFIDENCE,
     alternatives: [
       'Double-check the value against your official records before submitting.',
       'Avoid abbreviations unless they appear on the source document.',

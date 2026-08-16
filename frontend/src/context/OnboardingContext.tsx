@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext, useMemo, useState } from 'react';
+import React, { createContext, ReactNode, useCallback, useContext, useMemo, useState } from 'react';
 
 type DraftValues = Record<string, string>;
 
@@ -12,25 +12,28 @@ const OnboardingContext = createContext<OnboardingContextValue | undefined>(unde
 
 export function OnboardingProvider({ children }: { children: ReactNode }) {
   const [drafts, setDrafts] = useState<Record<string, DraftValues>>({});
+  const setDraft = useCallback((formKey: string, values: DraftValues) => {
+    setDrafts((currentDrafts) => ({
+      ...currentDrafts,
+      [formKey]: values,
+    }));
+  }, []);
+
+  const clearDraft = useCallback((formKey: string) => {
+    setDrafts((currentDrafts) => {
+      const nextDrafts = { ...currentDrafts };
+      delete nextDrafts[formKey];
+      return nextDrafts;
+    });
+  }, []);
 
   const value = useMemo<OnboardingContextValue>(
     () => ({
       drafts,
-      setDraft: (formKey, values) => {
-        setDrafts((currentDrafts) => ({
-          ...currentDrafts,
-          [formKey]: values,
-        }));
-      },
-      clearDraft: (formKey) => {
-        setDrafts((currentDrafts) => {
-          const nextDrafts = { ...currentDrafts };
-          delete nextDrafts[formKey];
-          return nextDrafts;
-        });
-      },
+      setDraft,
+      clearDraft,
     }),
-    [drafts]
+    [clearDraft, drafts, setDraft]
   );
 
   return <OnboardingContext.Provider value={value}>{children}</OnboardingContext.Provider>;

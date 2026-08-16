@@ -32,6 +32,7 @@ export default function FormField({
 }: FormFieldProps) {
   const [assistance, setAssistance] = useState<string | null>(null);
   const [isLoadingAssistance, setIsLoadingAssistance] = useState(false);
+  const inputId = `field-${name}`;
 
   const inputClasses = `mt-2 w-full rounded-xl border px-4 py-3 text-sm shadow-sm outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100 ${
     error ? 'border-red-300' : 'border-slate-300'
@@ -52,17 +53,18 @@ export default function FormField({
   };
 
   return (
-    <label className="block">
+    <div className="block">
       <div className="flex items-center justify-between gap-4">
-        <span className="text-sm font-medium text-slate-700">
+        <label className="text-sm font-medium text-slate-700" htmlFor={inputId}>
           {label}
           {required ? <span className="ml-1 text-red-500">*</span> : null}
-        </span>
+        </label>
         {onAssist ? (
           <button
             type="button"
             className="text-sm font-medium text-blue-600 hover:text-blue-700"
             onClick={handleAssist}
+            disabled={isLoadingAssistance}
           >
             {isLoadingAssistance ? 'Thinking…' : 'Ask AI'}
           </button>
@@ -70,7 +72,14 @@ export default function FormField({
       </div>
 
       {options ? (
-        <select className={inputClasses} value={value} onChange={(event) => onChange(event.target.value)}>
+        <select
+          className={inputClasses}
+          id={inputId}
+          name={name}
+          required={required}
+          value={value}
+          onChange={(event) => onChange(event.target.value)}
+        >
           <option value="">Select an option</option>
           {options.map((option) => (
             <option key={option.value} value={option.value}>
@@ -81,7 +90,9 @@ export default function FormField({
       ) : (
         <input
           className={inputClasses}
+          id={inputId}
           name={name}
+          required={required}
           type={type}
           placeholder={placeholder}
           value={value}
@@ -91,6 +102,6 @@ export default function FormField({
 
       {error ? <p className="mt-2 text-sm text-red-600">{error}</p> : null}
       {assistance ? <p className="mt-2 rounded-xl bg-blue-50 px-3 py-2 text-sm text-blue-700">{assistance}</p> : null}
-    </label>
+    </div>
   );
 }

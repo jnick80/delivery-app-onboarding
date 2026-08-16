@@ -19,6 +19,30 @@ interface OnboardingStatusData {
   submittedAt: string;
 }
 
+export interface DriverOnboardingPayload {
+  name: string;
+  email: string;
+  phone: string;
+  licenseNumber: string;
+  licenseExpiry: string;
+  vehicleType: string;
+  vehiclePlate: string;
+  insuranceExpiry: string;
+  bankAccount: string;
+}
+
+export interface MerchantOnboardingPayload {
+  businessName: string;
+  businessEmail: string;
+  businessPhone: string;
+  ownerName: string;
+  taxId: string;
+  registrationNumber: string;
+  serviceArea: string;
+  deliveryRadius: string;
+  bankAccount: string;
+}
+
 const apiClient: AxiosInstance = axios.create({
   baseURL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001',
   headers: {
@@ -69,7 +93,7 @@ export const getAIAssistance = async (
   return response.data;
 };
 
-export const submitDriverOnboarding = async (payload: Record<string, string>) => {
+export const submitDriverOnboarding = async (payload: DriverOnboardingPayload) => {
   const response = await apiClient.post<ApiResponse<OnboardingStatusData>>(
     '/api/onboarding/driver',
     payload
@@ -86,7 +110,7 @@ export const getDriverOnboardingStatus = async (id: string) => {
   return response.data;
 };
 
-export const submitMerchantOnboarding = async (payload: Record<string, string>) => {
+export const submitMerchantOnboarding = async (payload: MerchantOnboardingPayload) => {
   const response = await apiClient.post<ApiResponse<OnboardingStatusData>>(
     '/api/onboarding/merchant',
     payload

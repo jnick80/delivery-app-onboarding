@@ -27,11 +27,13 @@ export function useOnboardingForm<T extends FormValues>({
 }: UseOnboardingFormOptions<T>) {
   const { drafts, setDraft, clearDraft } = useOnboardingContext();
   const hasInitialized = useRef(false);
+  const initialValuesRef = useRef(initialValues);
 
   const [currentStep, setCurrentStep] = useState(0);
-  const [values, setValues] = useState<T>(initialValues);
+  const [values, setValues] = useState<T>(initialValuesRef.current);
   const [errors, setErrors] = useState<ValidationErrors<T>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submissionResult, setSubmissionResult] = useState<SubmissionResult | null>(null);
 
@@ -42,28 +44,34 @@ export function useOnboardingForm<T extends FormValues>({
 
     const storedValues = window.localStorage.getItem(formKey);
     if (storedValues) {
-      setValues({
-        ...initialValues,
-        ...(JSON.parse(storedValues) as T),
-      });
+      try {
+        setValues({
+          ...initialValuesRef.current,
+          ...(JSON.parse(storedValues) as T),
+        });
+      } catch (error) {
+        console.warn('Unable to restore onboarding draft from localStorage.', error);
+        window.localStorage.removeItem(formKey);
+      }
     } else if (drafts[formKey]) {
       setValues({
-        ...initialValues,
+        ...initialValuesRef.current,
         ...(drafts[formKey] as T),
       });
     }
 
     hasInitialized.current = true;
-  }, [drafts, formKey, initialValues]);
+    setIsHydrated(true);
+  }, [drafts, formKey]);
 
   useEffect(() => {
-    if (!hasInitialized.current || typeof window === 'undefined') {
+    if (!isHydrated || typeof window === 'undefined') {
       return;
     }
 
     window.localStorage.setItem(formKey, JSON.stringify(values));
     setDraft(formKey, values);
-  }, [formKey, setDraft, values]);
+  }, [formKey, isHydrated, setDraft, values]);
 
   const validateCurrentStep = () => {
     const nextErrors = validateStep(currentStep, values);
