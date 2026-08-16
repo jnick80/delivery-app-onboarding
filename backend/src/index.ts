@@ -2,6 +2,8 @@ import express, { Express, Request, Response } from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import dotenv from 'dotenv';
+import onboardingRoutes from './routes/onboarding';
+import aiRoutes from './routes/ai';
 
 // Load environment variables
 dotenv.config({ path: '.env.local' });
@@ -21,10 +23,8 @@ app.get('/api/health', (req: Request, res: Response) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Onboarding routes (to be implemented)
-app.get('/api/onboarding', (req: Request, res: Response) => {
-  res.json({ message: 'Onboarding endpoints coming soon' });
-});
+app.use('/api/onboarding', onboardingRoutes);
+app.use('/api/ai', aiRoutes);
 
 // Error handling middleware
 app.use((err: any, req: Request, res: Response, next: any) => {
