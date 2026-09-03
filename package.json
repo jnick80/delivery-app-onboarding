@@ -1,15 +1,11 @@
 {
   "name": "delivery-app-onboarding",
   "version": "1.0.0",
+  "private": true,
   "description": "",
-  "main": "index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "http://localhost:26831/jnick80/delivery-app-onboarding"
+    "test": "echo \"No tests specified\""
   },
   "keywords": [],
   "author": "",
